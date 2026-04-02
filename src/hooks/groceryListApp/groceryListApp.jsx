@@ -17,6 +17,7 @@ import {
   Chip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const initialItems = [
   { id: 1, name: "Milk", price: 35, category: "Dairy" },
@@ -61,7 +62,6 @@ export default function GroceryListApp() {
   }, [cart]);
 
   const addToCart = (item) => {
-    // Prevent duplicate add
     if (!cart.some((i) => i.id === item.id)) {
       const updated = [...cart, item];
       setCart(updated);
@@ -95,8 +95,7 @@ export default function GroceryListApp() {
       }
 
       if (couponCode[appliedCoupon]) {
-        totalPrice =
-          (totalPrice * (100 - couponCode[appliedCoupon])) / 100;
+        totalPrice = (totalPrice * (100 - couponCode[appliedCoupon])) / 100;
       }
     }
 
@@ -110,27 +109,65 @@ export default function GroceryListApp() {
   };
 
   const filteredItems = items
-    .filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((item) =>
-      category === "All" ? true : item.category === category
-    )
-    .sort((a, b) =>
-      sort === "asc" ? a.price - b.price : b.price - a.price
-    );
+    .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((item) => (category === "All" ? true : item.category === category))
+    .sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price));
 
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="100%" disableGutters sx={{ minHeight: '100vh', px: 0, py: 0, bgcolor: 'background.default', overflowX: 'hidden' }}>
-        <Box sx={{ width: '100%', minHeight: '100vh', maxWidth: 1600, mx: 'auto', px: { xs: 1, md: 4 }, py: { xs: 2, md: 4 }, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography variant="h3" fontWeight="bold" color="primary.main" gutterBottom align="center" sx={{ letterSpacing: 2, mb: 4 }}>
-            🛒 Grocery Store
+      <Container
+        maxWidth="100%"
+        disableGutters
+        sx={{
+          minHeight: "100vh",
+          px: 0,
+          py: 0,
+          bgcolor: "background.default",
+          overflowX: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            minHeight: "100vh",
+            maxWidth: 1600,
+            mx: "auto",
+            px: { xs: 1, md: 4 },
+            py: { xs: 2, md: 4 },
+            boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="h3"
+            fontWeight="bold"
+            color="primary.main"
+            gutterBottom
+            align="center"
+            sx={{ letterSpacing: 2, mb: 4 }}
+          >
+            <ShoppingCartIcon sx={{ fontSize: 48, mr: 1 }} />
+          Grocery Store
           </Typography>
 
-          {/* Controls */}
-          <Box sx={{ p: { xs: 1, md: 2 }, mb: 3, borderRadius: 3, background: '#fff', display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 900, width: '100%', boxShadow: 2 }}>
+          <Box
+            sx={{
+              p: { xs: 1, md: 2 },
+              mb: 3,
+              borderRadius: 3,
+              background: "#fff",
+              display: "flex",
+              gap: 2,
+              flexWrap: "wrap",
+              justifyContent: "center",
+              maxWidth: 900,
+              width: "100%",
+              boxShadow: 2,
+            }}
+          >
             <TextField
               label="Search items"
               size="small"
@@ -164,130 +201,207 @@ export default function GroceryListApp() {
             </Select>
           </Box>
 
-          {/* Flex Layout for Main Content */}
-          <Box display="flex" gap={4} flexDirection={{ xs: 'column', md: 'row' }} alignItems="flex-start" justifyContent="center" width="100%" maxWidth={1300}>
-          {/* LEFT: ITEMS */}
-          <Box flex={2} minWidth={0} sx={{ maxWidth: 700, width: '100%' }}>
-            <Typography variant="h6" gutterBottom color="primary" sx={{ fontWeight: 700 }}>
-              Items
-            </Typography>
-
-            <Paper sx={{ borderRadius: 3, boxShadow: 3, background: '#f8fafc', width: '100%' }}>
-              <List>
-                {filteredItems.map((item, index) => (
-                  <Box key={item.id}>
-                    <ListItem
-                      sx={{ py: 2 }}
-                      secondaryAction={
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="primary"
-                          sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
-                          onClick={() => addToCart(item)}
-                        >
-                          Add
-                        </Button>
-                      }
-                    >
-                      <ListItemText
-                        primary={
-                          <Typography fontWeight="600" color="text.primary">
-                            {item.name}
-                          </Typography>
-                        }
-                        secondary={
-                          <Box display="flex" gap={1} mt={0.5}>
-                            <Chip
-                              label={`₹${item.price}`}
-                              size="small"
-                              color="primary"
-                              sx={{ fontWeight: 600 }}
-                            />
-                            <Chip
-                              label={item.category}
-                              size="small"
-                              variant="outlined"
-                              sx={{ fontWeight: 500 }}
-                            />
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                    {index !== filteredItems.length - 1 && <Divider />}
-                  </Box>
-                ))}
-              </List>
-            </Paper>
-          </Box>
-
-          {/* RIGHT: CART */}
-          <Box flex={1} minWidth={320} sx={{ maxWidth: 450, width: '100%' }} position="sticky" top={20}>
-            <Typography variant="h6" gutterBottom color="primary" sx={{ fontWeight: 700 }}>
-              Cart Summary
-            </Typography>
-
-            <Paper sx={{ borderRadius: 3, p: 2, boxShadow: 3, background: '#f8fafc', width: '100%' }}>
-              <List>
-                {cart.map((item, index) => (
-                  <Box key={item.id}>
-                    <ListItem
-                      secondaryAction={
-                        <IconButton
-                          color="error"
-                          sx={{ background: '#fff', borderRadius: 2, boxShadow: 1, '&:hover': { background: '#ffeaea' } }}
-                          onClick={() => removeFromCart(item.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      }
-                    >
-                      <ListItemText
-                        primary={<Typography fontWeight={600}>{item.name}</Typography>}
-                        secondary={<Typography color="text.secondary">₹{item.price}</Typography>}
-                      />
-                    </ListItem>
-                    {index !== cart.length - 1 && <Divider />}
-                  </Box>
-                ))}
-              </List>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Typography>Total: <b>₹{total}</b></Typography>
-              <Typography fontWeight="bold" fontSize={18} color="primary.main">
-                Final: ₹{finalTotal()}
+          <Box
+            display="flex"
+            gap={4}
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="flex-start"
+            justifyContent="center"
+            width="100%"
+            maxWidth={1300}
+          >
+            <Box flex={2} minWidth={0} sx={{ maxWidth: 700, width: "100%" }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                color="primary"
+                sx={{ fontWeight: 700 }}
+              >
+                Items
               </Typography>
 
-              <Box mt={2} display="flex" gap={1} flexWrap="wrap" alignItems="center">
-                <TextField
-                  label="Coupon"
-                  size="small"
-                  value={coupon}
-                  onChange={(e) =>
-                    setCoupon(e.target.value.toUpperCase())
-                  }
-                  sx={{ minWidth: 120 }}
-                />
-                <Button variant="contained" color="primary" onClick={applyCoupon} sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}>
-                  Apply
-                </Button>
-                {/* Undo only shown if a delete has happened (history is not empty) */}
-                {history.length > 0 && (
-                  <Button variant="outlined" color="secondary" onClick={undo} sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}>
-                    Undo
+              <Paper
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: 3,
+                  background: "#f8fafc",
+                  width: "100%",
+                }}
+              >
+                <List>
+                  {filteredItems.map((item, index) => (
+                    <Box key={item.id}>
+                      <ListItem
+                        sx={{ py: 2 }}
+                        secondaryAction={
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="primary"
+                            sx={{
+                              borderRadius: 2,
+                              textTransform: "none",
+                              fontWeight: 600,
+                            }}
+                            onClick={() => addToCart(item)}
+                          >
+                            Add
+                          </Button>
+                        }
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography fontWeight="600" color="text.primary">
+                              {item.name}
+                            </Typography>
+                          }
+                          secondary={
+                            <Box display="flex" gap={1} mt={0.5}>
+                              <Chip
+                                label={`₹${item.price}`}
+                                size="small"
+                                color="primary"
+                                sx={{ fontWeight: 600 }}
+                              />
+                              <Chip
+                                label={item.category}
+                                size="small"
+                                variant="outlined"
+                                sx={{ fontWeight: 500 }}
+                              />
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                      {index !== filteredItems.length - 1 && <Divider />}
+                    </Box>
+                  ))}
+                </List>
+              </Paper>
+            </Box>
+
+            <Box
+              flex={1}
+              minWidth={320}
+              sx={{ maxWidth: 450, width: "100%" }}
+              position="sticky"
+              top={20}
+            >
+              <Typography
+                variant="h6"
+                gutterBottom
+                color="primary"
+                sx={{ fontWeight: 700 }}
+              >
+                Cart Summary
+              </Typography>
+
+              <Paper
+                sx={{
+                  borderRadius: 3,
+                  p: 2,
+                  boxShadow: 3,
+                  background: "#f8fafc",
+                  width: "100%",
+                }}
+              >
+                <List>
+                  {cart.map((item, index) => (
+                    <Box key={item.id}>
+                      <ListItem
+                        secondaryAction={
+                          <IconButton
+                            color="error"
+                            sx={{
+                              background: "#fff",
+                              borderRadius: 2,
+                              boxShadow: 1,
+                              "&:hover": { background: "#ffeaea" },
+                            }}
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        }
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography fontWeight={600}>
+                              {item.name}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography color="text.secondary">
+                              ₹{item.price}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      {index !== cart.length - 1 && <Divider />}
+                    </Box>
+                  ))}
+                </List>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Typography>
+                  Total: <b>₹{total}</b>
+                </Typography>
+                <Typography
+                  fontWeight="bold"
+                  fontSize={18}
+                  color="primary.main"
+                >
+                  Final: ₹{finalTotal()}
+                </Typography>
+
+                <Box
+                  mt={2}
+                  display="flex"
+                  gap={1}
+                  flexWrap="wrap"
+                  alignItems="center"
+                >
+                  <TextField
+                    label="Coupon"
+                    size="small"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value.toUpperCase())}
+                    sx={{ minWidth: 120 }}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={applyCoupon}
+                    sx={{
+                      borderRadius: 2,
+                      textTransform: "none",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Apply
                   </Button>
-                )}
-              </Box>
-            </Paper>
+
+                  {history.length > 0 && (
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={undo}
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: "none",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Undo
+                    </Button>
+                  )}
+                </Box>
+              </Paper>
+            </Box>
           </Box>
-        </Box>
         </Box>
       </Container>
     </>
   );
 }
-
-
-
-
